@@ -26,5 +26,6 @@ private:
 	WinHandle<PCCERT_CONTEXT, CertContext> m_handle;
 
 	friend class CertStore;
+	friend class FileSigner;
 };
 

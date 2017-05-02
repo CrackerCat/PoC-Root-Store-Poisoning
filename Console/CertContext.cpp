@@ -33,23 +33,20 @@ CertContext CertContext::Create(
 
 	auto subject = encodeString(certSubject);
 
-	CERT_NAME_BLOB blob;
-	memset(&blob, 0, sizeof(blob));
+	CERT_NAME_BLOB blob = {};
 	blob.cbData = static_cast<DWORD>(subject.size());
 	blob.pbData = &subject[0];
 
-	CRYPT_KEY_PROV_INFO info;
-	memset(&info, 0, sizeof(info));
+	CRYPT_KEY_PROV_INFO info = {};
 	info.pwszContainerName = const_cast<LPWSTR>(containerName);
 	info.dwProvType = PROV_RSA_FULL;
 	info.dwFlags = CRYPT_MACHINE_KEYSET;
 	info.dwKeySpec = AT_SIGNATURE;
 
-	CRYPT_ALGORITHM_IDENTIFIER algo;
-	memset(&algo, 0, sizeof(algo));
+	CRYPT_ALGORITHM_IDENTIFIER algo = {};
 	algo.pszObjId = szOID_RSA_SHA1RSA;
 
-	SYSTEMTIME endTime;
+	SYSTEMTIME endTime = {};
 	::GetSystemTime(&endTime);
 	endTime.wMinute += validMinutes;
 	if (endTime.wMinute > 59)
