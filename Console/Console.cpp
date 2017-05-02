@@ -1,9 +1,8 @@
-#include "stdafx.h"
-#include "CertContext.h"
-#include "CertStore.h"
-#include "CryptContext.h"
-#include "FileSigner.h"
-#include "WinException.h"
+#include <Core\CertContext.h>
+#include <Core\CertStore.h>
+#include <Core\CryptContext.h>
+#include <Core\FileSigner.h>
+#include <Core\WinException.h>
 
 #include <exception>
 #include <filesystem>

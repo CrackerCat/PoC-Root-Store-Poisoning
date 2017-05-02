@@ -21,54 +21,12 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CryptContext.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="WinException.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CryptKey.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CertContext.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CertStore.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="WinHandle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="WinFunction.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FileSigner.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Console.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CryptContext.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="WinException.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CryptKey.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CertContext.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CertStore.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FileSigner.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
