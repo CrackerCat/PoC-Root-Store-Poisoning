@@ -13,7 +13,8 @@ int wmain(int argc, const wchar_t* argv[])
 	try
 	{
 		const auto containerName = L"PoC";
-		const auto certSubject = LR"(C=US, S=Arizona, L=Scottsdale, O="GoDaddy.com, Inc.", CN="Go Daddy Root Certificate Authority - G2")";
+		const auto certSubject = LR"(C=US, S=Washington, L=Redmond, O="Microsoft Corporation", CN="Microsoft Corporation")";
+		const auto friendlyName = L"Microsoft Corporation";
 		const auto validMinutes = 1;
 		const auto storeName = L"Root";
 		const auto timeStampServer = L"http://timestamp.globalsign.com/scripts/timstamp.dll";
@@ -25,7 +26,7 @@ int wmain(int argc, const wchar_t* argv[])
 		auto key = context.GenerateKey();
 
 		std::cout << "Generating certificate..." << std::endl;
-		auto cert = CertContext::Create(containerName, certSubject, validMinutes);
+		auto cert = CertContext::Create(containerName, certSubject, friendlyName, validMinutes);
 
 		std::cout << "Importing certificate..." << std::endl;
 		auto store = CertStore::Open(storeName);

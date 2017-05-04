@@ -1,5 +1,6 @@
 #include "CertContext.h"
 #include "WinException.h"
+#include "WinTime.h"
 
 #include <vector>
 
@@ -11,8 +12,9 @@ CertContext::CertContext()
 }
 
 CertContext CertContext::Create(
-	const wchar_t* containerName,
-	const wchar_t* certSubject,
+	std::wstring_view containerName,
+	std::wstring_view certSubject,
+	std::wstring_view friendlyName,
 	uint16_t validMinutes)
 {
 	auto encodeString = [](const wchar_t* string)
@@ -30,14 +32,14 @@ CertContext CertContext::Create(
 		return buffer;
 	};
 
-	auto subject = encodeString(certSubject);
+	auto subject = encodeString(certSubject.data());
 
 	CERT_NAME_BLOB blob = {};
 	blob.cbData = static_cast<DWORD>(subject.size());
 	blob.pbData = &subject[0];
 
 	CRYPT_KEY_PROV_INFO info = {};
-	info.pwszContainerName = const_cast<LPWSTR>(containerName);
+	info.pwszContainerName = const_cast<LPWSTR>(containerName.data());
 	info.dwProvType = PROV_RSA_FULL;
 	info.dwFlags = CRYPT_MACHINE_KEYSET;
 	info.dwKeySpec = AT_SIGNATURE;
@@ -45,34 +47,24 @@ CertContext CertContext::Create(
 	CRYPT_ALGORITHM_IDENTIFIER algo = {};
 	algo.pszObjId = szOID_RSA_SHA1RSA;
 
-	SYSTEMTIME endTime = {};
-	::GetSystemTime(&endTime);
-	endTime.wMinute += validMinutes;
-	if (endTime.wMinute > 59)
-	{
-		endTime.wMinute -= 60;
-		endTime.wHour += 1;
-	}
-	if (endTime.wHour > 23)
-	{
-		endTime.wHour -= 24;
-		endTime.wDay += 1;
-	}
-	if (endTime.wDay > 31)
-	{
-		endTime.wDay -= 31;
-		endTime.wMonth += 1;
-	}
-	if (endTime.wMonth > 12)
-	{
-		endTime.wMonth -= 12;
-		endTime.wYear += 1;
-	}
+	WinTime startTime;
+	startTime.MoveBackward(1);
+
+	WinTime endTime;
+	endTime.MoveForward(validMinutes);
 
 	CertContext context;
-	context.m_handle = ::CertCreateSelfSignCertificate(0, &blob, 0, &info, &algo, nullptr, &endTime, nullptr);
+	context.m_handle = ::CertCreateSelfSignCertificate(0, &blob, 0, &info, &algo, &startTime, &endTime, nullptr);
 	if (!context.m_handle)
 		throw LastError();
+
+	//CRYPT_DATA_BLOB data = {};
+	//data.cbData = (friendlyName.size() + 1) * sizeof(wchar_t);
+	//data.pbData = (PBYTE)friendlyName.data();
+
+	//auto success = ::CertSetCertificateContextProperty(context.m_handle, CERT_FRIENDLY_NAME_PROP_ID, 0, &data);
+	//if (!success)
+	//	throw LastError();
 
 	return context;
 }

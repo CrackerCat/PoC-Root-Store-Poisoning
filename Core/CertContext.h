@@ -1,6 +1,7 @@
 #pragma once
 #include "WinHandle.h"
 #include <stdint.h>
+#include <string_view>
 #include <Windows.h>
 
 class CertContext
@@ -15,8 +16,9 @@ public:
 	CertContext& operator=(const CertContext&) = delete;
 
 	static CertContext Create(
-		const wchar_t* containerName,
-		const wchar_t* certSubject,
+		std::wstring_view containerName,
+		std::wstring_view certSubject,
+		std::wstring_view friendlyName,
 		uint16_t validMinutes);
 
 	static bool IsValid(PCCERT_CONTEXT handle);
