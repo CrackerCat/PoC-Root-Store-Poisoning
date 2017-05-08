@@ -3,17 +3,18 @@
 #include <wincrypt.h>
 #pragma comment(lib, "Crypt32.lib")
 
+using namespace Neat;
+
 CryptKey::CryptKey()
 {
 }
 
-bool CryptKey::IsValid(HCRYPTKEY handle)
+bool CryptKey::Traits::IsValid(HCRYPTKEY handle)
 {
 	return handle != NULL;
 }
 
-void CryptKey::Finalize(HCRYPTKEY handle)
+void CryptKey::Traits::Finalize(HCRYPTKEY handle)
 {
 	::CryptDestroyKey(handle);
 }
-

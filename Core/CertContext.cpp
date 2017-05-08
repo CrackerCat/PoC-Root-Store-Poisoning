@@ -1,11 +1,13 @@
 #include "CertContext.h"
-#include "WinException.h"
-#include "WinTime.h"
+#include <Neat\Win\Exception.h>
+#include <Neat\Win\Time.h>
 
 #include <vector>
 
 #include <wincrypt.h>
 #pragma comment(lib, "Crypt32.lib")
+
+using namespace Neat::Win;
 
 CertContext::CertContext()
 {
@@ -22,12 +24,12 @@ CertContext CertContext::Create(
 		DWORD size = 0;
 		auto success = ::CertStrToNameW(X509_ASN_ENCODING, string, CERT_X500_NAME_STR, nullptr, nullptr, &size, nullptr);
 		if (!success)
-			throw LastError();
+			throw LastErrorException();
 
 		std::vector<BYTE> buffer(size);
 		success = ::CertStrToNameW(X509_ASN_ENCODING, string, CERT_X500_NAME_STR, nullptr, &buffer[0], &size, nullptr);
 		if (!success)
-			throw LastError();
+			throw LastErrorException();
 
 		return buffer;
 	};
@@ -47,16 +49,16 @@ CertContext CertContext::Create(
 	CRYPT_ALGORITHM_IDENTIFIER algo = {};
 	algo.pszObjId = szOID_RSA_SHA1RSA;
 
-	WinTime startTime;
+	Time startTime;
 	startTime.MoveBackward(1);
 
-	WinTime endTime;
+	Time endTime;
 	endTime.MoveForward(validMinutes);
 
 	CertContext context;
 	context.m_handle = ::CertCreateSelfSignCertificate(0, &blob, 0, &info, &algo, &startTime, &endTime, nullptr);
 	if (!context.m_handle)
-		throw LastError();
+		throw LastErrorException();
 
 	//CRYPT_DATA_BLOB data = {};
 	//data.cbData = (friendlyName.size() + 1) * sizeof(wchar_t);
@@ -69,14 +71,12 @@ CertContext CertContext::Create(
 	return context;
 }
 
-bool CertContext::IsValid(PCCERT_CONTEXT handle)
+bool CertContext::Traits::IsValid(PCCERT_CONTEXT handle)
 {
 	return handle != nullptr;
 }
 
-void CertContext::Finalize(PCCERT_CONTEXT handle)
+void CertContext::Traits::Finalize(PCCERT_CONTEXT handle)
 {
 	::CertFreeCertificateContext(handle);
 }
-
-

@@ -1,6 +1,7 @@
 #pragma once
-#include "WinHandle.h"
-#include <stdint.h>
+#include <LibNeat\Neat\Types.h>
+#include <LibNeat\Neat\Handle.h>
+
 #include <string_view>
 #include <Windows.h>
 
@@ -21,11 +22,13 @@ public:
 		std::wstring_view friendlyName,
 		uint16_t validMinutes);
 
-	static bool IsValid(PCCERT_CONTEXT handle);
-	static void Finalize(PCCERT_CONTEXT handle);
-
 private:
-	WinHandle<PCCERT_CONTEXT, CertContext> m_handle;
+	struct Traits
+	{
+		static bool IsValid(PCCERT_CONTEXT handle);
+		static void Finalize(PCCERT_CONTEXT handle);
+	};
+	Neat::HandleT<PCCERT_CONTEXT, Traits> m_handle;
 
 	friend class CertStore;
 	friend class FileSigner;

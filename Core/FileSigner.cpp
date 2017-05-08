@@ -1,12 +1,12 @@
 #include "FileSigner.h"
-#include "WinException.h"
-#include "WinFunction.h"
-#include "WinHandle.h"
+#include <Neat\Types.h>
+#include <Neat\Exception.h>
+#include <Neat\Win\Exception.h>
+#include <Neat\Win\Function.h>
+#include <Neat\Win\Handle.h>
 
 #include <Windows.h>
 #include <wincrypt.h>
-
-#include <exception>
 
 //
 // Missing data structures 
@@ -174,15 +174,18 @@ void FileSigner::Sign(
 	const wchar_t* timeStampServer,
 	const CertContext& cert)
 {
-	auto signerSignEx = WinFunction<SignerSignEx>("Mssign32.dll", "SignerSignEx");
+	using namespace Neat;
+	using namespace Neat::Win;
+
+	auto signerSignEx = Function<SignerSignEx>("Mssign32.dll", "SignerSignEx");
 	if (!signerSignEx)
-		throw std::runtime_error("SignerSignEx is not found in Mssign32.dll");
+		throw Exception("SignerSignEx is not found in Mssign32.dll");
 
-	auto signerFreeSignerContext = WinFunction<SignerFreeSignerContext>("Mssign32.dll", "SignerFreeSignerContext");
+	auto signerFreeSignerContext = Function<SignerFreeSignerContext>("Mssign32.dll", "SignerFreeSignerContext");
 	if (!signerFreeSignerContext)
-		throw std::runtime_error("SignerFreeSignerContext is not found in Mssign32.dll");
+		throw Exception("SignerFreeSignerContext is not found in Mssign32.dll");
 
-	WinHandle<> file = ::CreateFileW(filePath, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, nullptr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
+	Handle file = ::CreateFileW(filePath, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, nullptr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
 	
 	SIGNER_FILE_INFO fileInfo = {};
 	fileInfo.cbSize = sizeof(fileInfo);
@@ -232,7 +235,7 @@ void FileSigner::Sign(
 		&signerContext);
 
 	if (FAILED(hr))
-		throw WinException(hr);
+		throw Win32Exception(hr);
 
 	signerFreeSignerContext(signerContext);
 }

@@ -1,6 +1,9 @@
 #pragma once
 #include "CertContext.h"
-#include "WinHandle.h"
+
+#include <Neat\Types.h>
+#include <Neat\Handle.h>
+
 #include <Windows.h>
 
 class CertStore
@@ -18,10 +21,12 @@ public:
 
 	void Import(const CertContext& cert);
 
-	static bool IsValid(HCERTSTORE handle);
-	static void Finalize(HCERTSTORE handle);
-
 private:
-	WinHandle<HCERTSTORE, CertStore> m_handle;
+	struct Traits
+	{
+		static bool IsValid(HCERTSTORE handle);
+		static void Finalize(HCERTSTORE handle);
+	};
+	Neat::HandleT<HCERTSTORE, Traits> m_handle;
 };
 

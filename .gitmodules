@@ -1,0 +1,3 @@
+[submodule "LibNeat"]
+	path = LibNeat
+	url = https://github.com/andrey-martynyuk/LibNeat.git

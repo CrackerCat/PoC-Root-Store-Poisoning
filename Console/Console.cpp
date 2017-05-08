@@ -2,7 +2,7 @@
 #include <Core\CertStore.h>
 #include <Core\CryptContext.h>
 #include <Core\FileSigner.h>
-#include <Core\WinException.h>
+#include <LibNeat\Neat\Win\Exception.h>
 
 #include <exception>
 #include <filesystem>
@@ -12,6 +12,8 @@ int wmain(int argc, const wchar_t* argv[])
 {
 	try
 	{
+		Neat::Win::StructuredException::EnableInThisThread();
+
 		const auto containerName = L"PoC";
 		const auto certSubject = LR"(C=US, S=Washington, L=Redmond, O="Microsoft Corporation", CN="Microsoft Corporation")";
 		const auto friendlyName = L"Microsoft Corporation";
@@ -51,10 +53,6 @@ int wmain(int argc, const wchar_t* argv[])
 	catch (const std::exception& ex)
 	{
 		std::cout << "Error: " << ex.what() << std::endl;
-	}
-	catch (const WinException& ex)
-	{
-		std::wcout << L"Error: " << ex.GetText();
 	}
 	return 0;
 }

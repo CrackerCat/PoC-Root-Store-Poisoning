@@ -1,6 +1,9 @@
 #pragma once
 #include "CryptKey.h"
-#include "WinHandle.h"
+
+#include <Neat\Types.h>
+#include <Neat\Handle.h>
+
 #include <string>
 #include <Windows.h>
 
@@ -17,11 +20,13 @@ public:
 
 	CryptKey GenerateKey();
 
-	static bool IsValid(HCRYPTPROV handle);
-	static void Finalize(HCRYPTPROV handle);
-
 private:
+	struct Traits
+	{
+		static bool IsValid(HCRYPTPROV handle);
+		static void Finalize(HCRYPTPROV handle);
+	};
+	Neat::HandleT<HCRYPTPROV, Traits> m_handle;
 	std::wstring m_name;
-	WinHandle<HCRYPTPROV, CryptContext> m_handle;
 };
 
